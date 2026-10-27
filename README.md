@@ -73,7 +73,6 @@ Los tres servidores corren en contenedores Docker dentro de la misma red privada
 ├── instalar.ps1                       Instalacion automatica (ejecuta todo en orden)
 ├── reporte.ps1                        Demostracion completa como pagina web
 ├── README.md                          Esta guia
-├── GUION_VIDEO.md                     Guion sugerido para el video
 ├── postgres/
 │   ├── Dockerfile                     PostgreSQL 16 + tds_fdw + mongo_fdw
 │   ├── config/
