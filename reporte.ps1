@@ -1,7 +1,7 @@
 ﻿# =====================================================================
 #  reporte.ps1 - Ejecuta la demostracion completa en los 3 servidores y
 #  muestra los resultados en una pagina web (se abre en el navegador).
-#  Son las mismas pruebas de demo.ps1, pero con tablas y colores.
+#  Cada paso explica que se prueba y que resultado se espera.
 #
 #       powershell -ExecutionPolicy Bypass -File .\reporte.ps1
 #

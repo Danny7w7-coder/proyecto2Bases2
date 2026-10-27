@@ -71,8 +71,7 @@ Los tres servidores corren en contenedores Docker dentro de la misma red privada
 ```
 ├── docker-compose.yml                 Los 3 servidores, la red y los volumenes
 ├── instalar.ps1                       Instalacion automatica (ejecuta todo en orden)
-├── demo.ps1                           Demostracion guiada paso a paso (terminal)
-├── reporte.ps1                        La misma demostracion como pagina web
+├── reporte.ps1                        Demostracion completa como pagina web
 ├── README.md                          Esta guia
 ├── GUION_VIDEO.md                     Guion sugerido para el video
 ├── postgres/
@@ -472,19 +471,13 @@ Los reportes se calculan en MongoDB con *aggregation pipelines* sobre los docume
 
 ## 10. Demostración y resultados esperados
 
-**Forma recomendada: demostración guiada.** Explica cada paso en español, ejecuta la prueba y dice qué resultado se espera (Enter para avanzar):
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\demo.ps1
-```
-
-**Desde pgAdmin:** abra `postgres/scripts/09_pruebas_pgadmin.sql` en el *Query Tool*, seleccione un bloque y presione F5. Desde PostgreSQL se ven los tres motores: las tablas normales, el esquema `mssql` (datos de SQL Server) y el esquema `mongo` (datos de MongoDB).
-
-**Versión visual en el navegador:** ejecuta las mismas pruebas y abre una página web con tablas y colores por motor:
+**Forma recomendada: reporte en el navegador.** Ejecuta las 9 pruebas en los tres servidores y abre una página web con tablas, colores por motor y el resultado esperado de cada paso:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\reporte.ps1
 ```
+
+**Desde pgAdmin:** abra `postgres/scripts/09_pruebas_pgadmin.sql` en el *Query Tool*, seleccione un bloque y presione F5. Desde PostgreSQL se ven los tres motores: las tablas normales, el esquema `mssql` (datos de SQL Server) y el esquema `mongo` (datos de MongoDB).
 
 Forma detallada (scripts completos), **en este orden** después de una instalación limpia:
 

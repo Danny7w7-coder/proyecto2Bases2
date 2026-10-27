@@ -19,7 +19,7 @@ powershell -ExecutionPolicy Bypass -File .\instalar.ps1 -Reiniciar
 | 6:30 – 7:30 | 2 | **Operación 3** + bloque de seguridad de `08_consultas_prueba.sql` + `04_prueba_permisos.js` | Vista web que mezcla datos locales y de SQL Server. usr_api_mobile solo ve sus vistas y recibe "permiso denegado" en lo demás. Mostrar la tabla de roles (pg_roles) |
 | 7:30 – 8:00 | 1 | README / documento Word | Cierre: resumen de lo logrado |
 
-**Lo más fácil para grabar:** `powershell -ExecutionPolicy Bypass -File .\demo.ps1`. Muestra cada operación con su explicación y espera Enter, así cada integrante narra su paso con calma. Para mostrar los resultados más visuales, `reporte.ps1` hace lo mismo y abre una página web con tablas.
+**Lo más fácil para grabar:** ejecutar `powershell -ExecutionPolicy Bypass -File .\reporte.ps1` (se ve unos segundos en la terminal que corre de verdad) y recorrer la página web que se abre, tarjeta por tarjeta. También se puede mostrar en pgAdmin con `postgres/scripts/09_pruebas_pgadmin.sql`, ejecutando bloque por bloque.
 
 Comandos detallados (también están en el README, sección 10):
 
