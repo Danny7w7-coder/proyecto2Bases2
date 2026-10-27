@@ -43,6 +43,12 @@ CREATE USER MAPPING FOR usr_api_mobile
     SERVER srv_mssql_integracion
     OPTIONS (username 'usr_fdw_pg_mssql', password 'Fdw_Mssql2026!');
 
+-- El administrador tambien puede ver las tablas remotas (por ejemplo desde
+-- pgAdmin), usando el mismo login remoto de permisos minimos.
+CREATE USER MAPPING FOR postgres
+    SERVER srv_mssql_integracion
+    OPTIONS (username 'usr_fdw_pg_mssql', password 'Fdw_Mssql2026!');
+
 -- 4) Tablas foraneas en un esquema aparte para distinguirlas facilmente
 CREATE SCHEMA mssql AUTHORIZATION usr_fdw_pg_mssql;
 

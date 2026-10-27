@@ -88,7 +88,8 @@ Los tres servidores corren en contenedores Docker dentro de la misma red privada
 │       ├── 05_fdw_mongodb.sql         Canal mongo_fdw
 │       ├── 06_operaciones_distribuidas.sql  Funciones y procedimientos distribuidos
 │       ├── 07_vistas_api.sql          Vistas para web y movil + permisos
-│       └── 08_consultas_prueba.sql    Demostracion de todas las operaciones
+│       ├── 08_consultas_prueba.sql    Demostracion de todas las operaciones
+│       └── 09_pruebas_pgadmin.sql     Pruebas por bloques para ejecutar en pgAdmin
 ├── sqlserver/
 │   ├── 01_crear_bd.sql                Base y tablas (segmentacion vertical)
 │   ├── 02_datos_prueba.sql
@@ -376,7 +377,7 @@ Tablas foráneas del esquema `mongo`: `resultados_estudios`, `resumen_paciente` 
 **¿Cómo se usan si no pueden iniciar sesión?**
 - Las funciones que tocan otro motor son `SECURITY DEFINER` y su dueño es el rol interno. Quien las ejecute se conecta al motor remoto **como el rol interno**, con sus permisos mínimos.
 - En SQL Server, los procedimientos pueden insertar aunque el rol tenga `DENY INSERT` gracias al **encadenamiento de propiedad**: el procedimiento y las tablas tienen el mismo dueño (`dbo`), así que SQL Server no revisa los permisos de las tablas.
-- `tds_fdw` busca el `USER MAPPING` del usuario que hace la consulta. Por eso `usr_api_web` y `usr_api_mobile` también tienen uno, pero apunta al **mismo login remoto** `usr_fdw_pg_mssql`: las apps nunca tienen en SQL Server más permisos que el perfil interno.
+- `tds_fdw` busca el `USER MAPPING` del usuario que hace la consulta. Por eso `usr_api_web` y `usr_api_mobile` también tienen uno, pero apunta al **mismo login remoto** `usr_fdw_pg_mssql`: las apps nunca tienen en SQL Server más permisos que el perfil interno. El administrador (`postgres`) también tiene mapeos hacia los mismos usuarios internos, para poder ver las tablas remotas desde pgAdmin.
 
 ### 7.2 Perfiles externos (aplicaciones)
 
@@ -476,6 +477,8 @@ Los reportes se calculan en MongoDB con *aggregation pipelines* sobre los docume
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\demo.ps1
 ```
+
+**Desde pgAdmin:** abra `postgres/scripts/09_pruebas_pgadmin.sql` en el *Query Tool*, seleccione un bloque y presione F5. Desde PostgreSQL se ven los tres motores: las tablas normales, el esquema `mssql` (datos de SQL Server) y el esquema `mongo` (datos de MongoDB).
 
 **Versión visual en el navegador:** ejecuta las mismas pruebas y abre una página web con tablas y colores por motor:
 

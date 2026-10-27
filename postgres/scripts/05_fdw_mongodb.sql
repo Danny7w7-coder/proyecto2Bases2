@@ -22,6 +22,12 @@ CREATE USER MAPPING FOR usr_fdw_pg_mongo
     SERVER srv_mongo_reportes
     OPTIONS (username 'usr_fdw_pg_mongo', password 'Fdw_Mongo2026');
 
+-- El administrador tambien puede ver las colecciones (por ejemplo desde
+-- pgAdmin), usando el mismo usuario remoto de permisos minimos.
+CREATE USER MAPPING FOR postgres
+    SERVER srv_mongo_reportes
+    OPTIONS (username 'usr_fdw_pg_mongo', password 'Fdw_Mongo2026');
+
 CREATE SCHEMA mongo AUTHORIZATION usr_fdw_pg_mongo;
 
 -- Coleccion: resultados_estudios (documento desnormalizado por estudio)
