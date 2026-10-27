@@ -71,7 +71,8 @@ Los tres servidores corren en contenedores Docker dentro de la misma red privada
 ```
 ├── docker-compose.yml                 Los 3 servidores, la red y los volumenes
 ├── instalar.ps1                       Instalacion automatica (ejecuta todo en orden)
-├── demo.ps1                           Demostracion guiada paso a paso
+├── demo.ps1                           Demostracion guiada paso a paso (terminal)
+├── reporte.ps1                        La misma demostracion como pagina web
 ├── README.md                          Esta guia
 ├── GUION_VIDEO.md                     Guion sugerido para el video
 ├── postgres/
@@ -474,6 +475,12 @@ Los reportes se calculan en MongoDB con *aggregation pipelines* sobre los docume
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\demo.ps1
+```
+
+**Versión visual en el navegador:** ejecuta las mismas pruebas y abre una página web con tablas y colores por motor:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\reporte.ps1
 ```
 
 Forma detallada (scripts completos), **en este orden** después de una instalación limpia:

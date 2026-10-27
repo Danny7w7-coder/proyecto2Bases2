@@ -6,3 +6,6 @@
 Thumbs.db
 .DS_Store
 .vscode/
+
+# Pagina generada por reporte.ps1
+reporte_demo.html
