@@ -1,0 +1,78 @@
+# =====================================================================
+#  Sistema de Gestion de Estudios Medicos Distribuido
+#  Levanta los 3 servidores en una misma red privada de Docker:
+#    - pg_clinica    : PostgreSQL 16 (nucleo transaccional + FDW)
+#    - mssql_integra : SQL Server 2022 (integracion externa)
+#    - mongo_reportes: MongoDB 7 (capa analitica)
+#  Puertos expuestos en Windows (host):
+#    PostgreSQL -> 5433 | SQL Server -> 1434 | MongoDB -> 27018
+#  (se usan puertos distintos a los por defecto para no chocar con
+#   instalaciones locales que ya existan en la computadora)
+# =====================================================================
+services:
+
+  postgres:
+    # Imagen ya construida (con tds_fdw y mongo_fdw) publicada en GitHub.
+    # Si no se puede descargar, Docker la construye desde ./postgres
+    image: ghcr.io/danny7w7-coder/clinica-postgres:1.0
+    build: ./postgres
+    container_name: pg_clinica
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Admin_Pg2026
+      POSTGRES_DB: clinica_db
+    # Se usan nuestros propios postgresql.conf y pg_hba.conf
+    command: >
+      postgres
+      -c config_file=/etc/postgresql/postgresql.conf
+      -c hba_file=/etc/postgresql/pg_hba.conf
+    volumes:
+      - ./postgres/config/postgresql.conf:/etc/postgresql/postgresql.conf:ro
+      - ./postgres/config/pg_hba.conf:/etc/postgresql/pg_hba.conf:ro
+      - ./postgres/scripts:/scripts:ro
+      - pg_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    depends_on:
+      - sqlserver
+      - mongodb
+    networks:
+      - red_medica
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql_integra
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "Admin_Sql2026!"
+      MSSQL_PID: Developer
+    volumes:
+      - ./sqlserver:/scripts:ro
+      - mssql_data:/var/opt/mssql
+    ports:
+      - "1434:1433"
+    networks:
+      - red_medica
+
+  mongodb:
+    image: mongo:7.0
+    container_name: mongo_reportes
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: Admin_Mongo2026
+    volumes:
+      - ./mongodb:/scripts:ro
+      - mongo_data:/data/db
+    ports:
+      - "27018:27017"
+    networks:
+      - red_medica
+
+networks:
+  red_medica:
+    driver: bridge
+
+volumes:
+  pg_data:
+  mssql_data:
+  mongo_data:

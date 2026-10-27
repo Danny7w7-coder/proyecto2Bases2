@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="960" viewBox="0 0 1400 960" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#333"/>
+    </marker>
+    <marker id="fg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#13834A"/>
+    </marker>
+    <marker id="fr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#CC2927"/>
+    </marker>
+  </defs>
+  <rect width="1400" height="960" fill="#fff"/>
+  <text x="700" y="40" text-anchor="middle" font-size="26" font-weight="700" fill="#222">Transacción distribuida: registrar el resultado de un estudio</text>
+  <text x="700" y="66" text-anchor="middle" font-size="14.5" fill="#555">CALL sp_registrar_resultado(13, 1, 1, '{"glicemia": 92, "unidad": "mg/dL"}', 'Glicemia normal') · involucra los TRES motores</text>
+
+  <!-- Participantes -->
+  <rect x="60" y="90" width="200" height="56" rx="10" fill="#F3F4F6" stroke="#6B7280" stroke-width="2"/>
+  <text x="160" y="115" text-anchor="middle" font-size="16" font-weight="700" fill="#111">Aplicación / usuario</text>
+  <text x="160" y="135" text-anchor="middle" font-size="12.5" fill="#444">psql o app web</text>
+  <rect x="400" y="90" width="220" height="56" rx="10" fill="#336791"/>
+  <text x="510" y="115" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">PostgreSQL</text>
+  <text x="510" y="135" text-anchor="middle" font-size="12.5" fill="#E5EDF6">clinica_db</text>
+  <rect x="780" y="90" width="220" height="56" rx="10" fill="#13834A"/>
+  <text x="890" y="115" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">MongoDB</text>
+  <text x="890" y="135" text-anchor="middle" font-size="12.5" fill="#E3F5EA">reportes_medicos</text>
+  <rect x="1120" y="90" width="220" height="56" rx="10" fill="#CC2927"/>
+  <text x="1230" y="115" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">SQL Server</text>
+  <text x="1230" y="135" text-anchor="middle" font-size="12.5" fill="#FBE3E3">IntegracionMedica</text>
+
+  <!-- Lineas de vida -->
+  <line x1="160" y1="146" x2="160" y2="900" stroke="#9CA3AF" stroke-width="2" stroke-dasharray="6 6"/>
+  <line x1="510" y1="146" x2="510" y2="900" stroke="#9CA3AF" stroke-width="2" stroke-dasharray="6 6"/>
+  <line x1="890" y1="146" x2="890" y2="900" stroke="#9CA3AF" stroke-width="2" stroke-dasharray="6 6"/>
+  <line x1="1230" y1="146" x2="1230" y2="900" stroke="#9CA3AF" stroke-width="2" stroke-dasharray="6 6"/>
+
+  <!-- Fase 1 -->
+  <rect x="20" y="165" width="1360" height="285" rx="10" fill="#EEF3F9" opacity="0.7"/>
+  <text x="34" y="188" font-size="14" font-weight="700" fill="#336791">FASE 1 · Transacción local en PostgreSQL</text>
+
+  <line x1="160" y1="215" x2="500" y2="215" stroke="#333" stroke-width="2.2" marker-end="url(#f)"/>
+  <text x="330" y="207" text-anchor="middle" font-size="13" fill="#111"><tspan font-weight="700">1.</tspan> CALL sp_registrar_resultado(...)</text>
+
+  <rect x="520" y="235" width="560" height="44" rx="6" fill="#fff" stroke="#336791"/>
+  <text x="535" y="255" font-size="13" fill="#111"><tspan font-weight="700">2.</tspan> Valida que la orden 13 exista y esté PENDIENTE</text>
+  <text x="535" y="272" font-size="13" fill="#111">    INSERT INTO resultados_estudios → fragmento <tspan font-weight="700" fill="#336791">resultados_estudios_san_jose</tspan></text>
+  <rect x="520" y="290" width="560" height="28" rx="6" fill="#fff" stroke="#336791"/>
+  <text x="535" y="309" font-size="13" fill="#111"><tspan font-weight="700">3.</tspan> UPDATE ordenes_medicas SET estado = 'COMPLETADA'</text>
+
+  <rect x="420" y="340" width="180" height="44" rx="22" fill="#336791"/>
+  <text x="510" y="368" text-anchor="middle" font-size="17" font-weight="700" fill="#fff">4. COMMIT ✔</text>
+  <text x="620" y="360" font-size="13" fill="#1F3A5F" font-weight="700">El dato queda CONFIRMADO en PostgreSQL (fuente de verdad).</text>
+  <text x="620" y="378" font-size="13" fill="#1F3A5F">Desde aquí, una falla remota ya no puede perder el resultado clínico.</text>
+  <line x1="500" y1="420" x2="170" y2="420" stroke="#333" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#f)"/>
+  <text x="335" y="412" text-anchor="middle" font-size="12.5" fill="#333">NOTICE: PostgreSQL: estudio 13 confirmado</text>
+
+  <!-- Fase 2 -->
+  <rect x="20" y="465" width="1360" height="160" rx="10" fill="#EDF8F1" opacity="0.8"/>
+  <text x="34" y="488" font-size="14" font-weight="700" fill="#13834A">FASE 2 · Propagación a MongoDB (mongo_fdw, como usr_fdw_pg_mongo)</text>
+  <line x1="510" y1="520" x2="880" y2="520" stroke="#13834A" stroke-width="2.4" marker-end="url(#fg)"/>
+  <text x="695" y="512" text-anchor="middle" font-size="13" fill="#0E5530"><tspan font-weight="700">5.</tspan> INSERT documento en resultados_estudios</text>
+  <line x1="510" y1="568" x2="880" y2="568" stroke="#13834A" stroke-width="2.4" marker-end="url(#fg)"/>
+  <text x="695" y="560" text-anchor="middle" font-size="13" fill="#0E5530"><tspan font-weight="700">6.</tspan> UPDATE resumen_paciente (total_estudios 1 → 2)</text>
+  <text x="905" y="530" font-size="12.5" fill="#0E5530">mongo.fn_publicar_estudio(13)</text>
+  <text x="905" y="548" font-size="12.5" fill="#0E5530">resultado viaja como subdocumento</text>
+  <line x1="500" y1="605" x2="170" y2="605" stroke="#333" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#f)"/>
+  <text x="335" y="597" text-anchor="middle" font-size="12.5" fill="#333">NOTICE: MongoDB: estudio 13 publicado</text>
+
+  <!-- Fase 3 -->
+  <rect x="20" y="640" width="1360" height="200" rx="10" fill="#FCF0F0" opacity="0.8"/>
+  <text x="34" y="663" font-size="14" font-weight="700" fill="#CC2927">FASE 3 · Propagación a SQL Server (tds_fdw, como usr_fdw_pg_mssql)</text>
+  <line x1="510" y1="700" x2="1220" y2="700" stroke="#CC2927" stroke-width="2.4" marker-end="url(#fr)"/>
+  <text x="865" y="692" text-anchor="middle" font-size="13" fill="#7A1414"><tspan font-weight="700">7.</tspan> mssql.fn_registrar_factura(13) → EXEC dbo.sp_registrar_factura @id_estudio = 13, ...</text>
+  <rect x="980" y="712" width="390" height="66" rx="6" fill="#fff" stroke="#CC2927"/>
+  <text x="995" y="732" font-size="12.5" fill="#111"><tspan font-weight="700">8.</tspan> INSERT facturas_externas (estado PENDIENTE)</text>
+  <text x="995" y="750" font-size="12.5" fill="#111">    EXEC sp_actualizar_estado_facturacion</text>
+  <text x="995" y="768" font-size="12.5" fill="#111">    EXEC sp_generar_resumen_facturacion</text>
+  <line x1="1220" y1="805" x2="520" y2="805" stroke="#CC2927" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#fr)"/>
+  <text x="865" y="797" text-anchor="middle" font-size="12.5" fill="#7A1414"><tspan font-weight="700">9.</tspan> 'OK: factura del estudio 13 enviada a SSP-01'</text>
+  <line x1="500" y1="828" x2="170" y2="828" stroke="#333" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#f)"/>
+  <text x="335" y="820" text-anchor="middle" font-size="12.5" fill="#333">NOTICE: SQL Server: OK ...</text>
+
+  <!-- Nota -->
+  <rect x="20" y="860" width="1360" height="80" rx="10" fill="#FFF7ED" stroke="#D97706" stroke-width="1.5"/>
+  <text x="40" y="886" font-size="14" font-weight="700" fill="#92400E">Manejo de fallas</text>
+  <text x="40" y="908" font-size="13" fill="#92400E">Las fases 2 y 3 están en bloques BEGIN ... EXCEPTION. Si MongoDB o SQL Server no responden, se muestra un WARNING con la función</text>
+  <text x="40" y="926" font-size="13" fill="#92400E">para reintentar (mongo.fn_publicar_estudio / mssql.fn_registrar_factura). Ambas son idempotentes: reintentarlas no duplica datos.</text>
+</svg>

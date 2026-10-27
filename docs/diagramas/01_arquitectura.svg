@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="820" viewBox="0 0 1400 820" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="fl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#333"/>
+    </marker>
+    <marker id="flr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#CC2927"/>
+    </marker>
+    <marker id="flg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#13834A"/>
+    </marker>
+  </defs>
+  <rect width="1400" height="820" fill="#ffffff"/>
+  <text x="700" y="42" text-anchor="middle" font-size="26" font-weight="700" fill="#222">Arquitectura distribuida y mapa de conexiones</text>
+  <text x="700" y="70" text-anchor="middle" font-size="15" fill="#555">Sistema de Gestión de Estudios Médicos Distribuido</text>
+
+  <!-- Aplicaciones -->
+  <rect x="40" y="200" width="200" height="90" rx="12" fill="#F3F4F6" stroke="#6B7280" stroke-width="2"/>
+  <text x="140" y="238" text-anchor="middle" font-size="18" font-weight="700" fill="#111">Aplicación Web</text>
+  <text x="140" y="264" text-anchor="middle" font-size="14" fill="#374151">usuario: usr_api_web</text>
+  <rect x="40" y="420" width="200" height="90" rx="12" fill="#F3F4F6" stroke="#6B7280" stroke-width="2"/>
+  <text x="140" y="458" text-anchor="middle" font-size="18" font-weight="700" fill="#111">Aplicación Móvil</text>
+  <text x="140" y="484" text-anchor="middle" font-size="14" fill="#374151">usuario: usr_api_mobile</text>
+
+  <!-- Red Docker -->
+  <rect x="300" y="100" width="1070" height="680" rx="18" fill="none" stroke="#9CA3AF" stroke-width="2" stroke-dasharray="10 8"/>
+  <text x="320" y="128" font-size="15" fill="#6B7280" font-weight="600">Red privada Docker: red_medica</text>
+
+  <!-- PostgreSQL -->
+  <rect x="340" y="150" width="400" height="600" rx="14" fill="#EAF1F8" stroke="#336791" stroke-width="3"/>
+  <rect x="340" y="150" width="400" height="56" rx="14" fill="#336791"/>
+  <rect x="340" y="186" width="400" height="20" fill="#336791"/>
+  <text x="540" y="186" text-anchor="middle" font-size="20" font-weight="700" fill="#fff">PostgreSQL 16 · clinica_db</text>
+  <text x="540" y="230" text-anchor="middle" font-size="14" fill="#1F3A5F">Núcleo transaccional · contenedor pg_clinica · puerto 5433</text>
+
+  <rect x="365" y="250" width="350" height="120" rx="8" fill="#fff" stroke="#336791"/>
+  <text x="380" y="274" font-size="15" font-weight="700" fill="#1F3A5F">public · segmentación HORIZONTAL</text>
+  <text x="380" y="298" font-size="13" fill="#333">pacientes · citas · ordenes_medicas ·</text>
+  <text x="380" y="316" font-size="13" fill="#333">resultados_estudios, cada una en 3 fragmentos:</text>
+  <text x="380" y="340" font-size="13" fill="#336791" font-weight="600">_san_jose  |  _alajuela  |  _cartago</text>
+  <text x="380" y="360" font-size="12" fill="#555">+ catálogos: sucursales, medicos, tipos_estudio</text>
+
+  <rect x="365" y="385" width="170" height="95" rx="8" fill="#fff" stroke="#CC2927"/>
+  <text x="450" y="410" text-anchor="middle" font-size="14" font-weight="700" fill="#A61B1B">esquema mssql</text>
+  <text x="450" y="432" text-anchor="middle" font-size="12" fill="#333">6 tablas foráneas</text>
+  <text x="450" y="450" text-anchor="middle" font-size="12" fill="#333">(tds_fdw)</text>
+  <text x="450" y="468" text-anchor="middle" font-size="12" fill="#333">+ fn_registrar_*</text>
+
+  <rect x="545" y="385" width="170" height="95" rx="8" fill="#fff" stroke="#13834A"/>
+  <text x="630" y="410" text-anchor="middle" font-size="14" font-weight="700" fill="#0E6B3B">esquema mongo</text>
+  <text x="630" y="432" text-anchor="middle" font-size="12" fill="#333">3 tablas foráneas</text>
+  <text x="630" y="450" text-anchor="middle" font-size="12" fill="#333">(mongo_fdw)</text>
+  <text x="630" y="468" text-anchor="middle" font-size="12" fill="#333">+ fn_exportar_*</text>
+
+  <rect x="365" y="495" width="170" height="80" rx="8" fill="#fff" stroke="#6B7280"/>
+  <text x="450" y="520" text-anchor="middle" font-size="14" font-weight="700" fill="#111">api_web</text>
+  <text x="450" y="542" text-anchor="middle" font-size="12" fill="#333">4 vistas completas</text>
+  <text x="450" y="560" text-anchor="middle" font-size="12" fill="#333">(local + remoto)</text>
+  <rect x="545" y="495" width="170" height="80" rx="8" fill="#fff" stroke="#6B7280"/>
+  <text x="630" y="520" text-anchor="middle" font-size="14" font-weight="700" fill="#111">api_movil</text>
+  <text x="630" y="542" text-anchor="middle" font-size="12" fill="#333">3 vistas</text>
+  <text x="630" y="560" text-anchor="middle" font-size="12" fill="#333">simplificadas</text>
+
+  <rect x="365" y="590" width="350" height="140" rx="8" fill="#fff" stroke="#336791"/>
+  <text x="380" y="614" font-size="14" font-weight="700" fill="#1F3A5F">Roles</text>
+  <text x="380" y="636" font-size="12.5" fill="#333">Internos (NOLOGIN): usr_fdw_pg_mssql, usr_fdw_pg_mongo</text>
+  <text x="380" y="656" font-size="12.5" fill="#333">Externos (LOGIN, SCRAM-SHA-256):</text>
+  <text x="380" y="674" font-size="12.5" fill="#333">   usr_api_web, usr_api_mobile</text>
+  <text x="380" y="698" font-size="12.5" fill="#333">pg_hba.conf: roles FDW → reject</text>
+  <text x="380" y="716" font-size="12.5" fill="#333">               apps → scram-sha-256 solo a clinica_db</text>
+
+  <!-- SQL Server -->
+  <rect x="960" y="150" width="380" height="270" rx="14" fill="#FBECEC" stroke="#CC2927" stroke-width="3"/>
+  <rect x="960" y="150" width="380" height="56" rx="14" fill="#CC2927"/>
+  <rect x="960" y="186" width="380" height="20" fill="#CC2927"/>
+  <text x="1150" y="186" text-anchor="middle" font-size="20" font-weight="700" fill="#fff">SQL Server 2022 · IntegracionMedica</text>
+  <text x="1150" y="230" text-anchor="middle" font-size="14" fill="#7A1414">Integración externa · mssql_integra · puerto 1434</text>
+  <text x="980" y="262" font-size="14" font-weight="700" fill="#7A1414">Segmentación VERTICAL</text>
+  <text x="980" y="284" font-size="13" fill="#333">paciente_integracion · facturas_externas</text>
+  <text x="980" y="304" font-size="13" fill="#333">aseguradoras · convenios · resumen_facturacion</text>
+  <text x="980" y="330" font-size="14" font-weight="700" fill="#7A1414">Procedimientos almacenados</text>
+  <text x="980" y="352" font-size="13" fill="#333">sp_generar_resumen_facturacion</text>
+  <text x="980" y="370" font-size="13" fill="#333">sp_registrar_paciente_integracion</text>
+  <text x="980" y="388" font-size="13" fill="#333">sp_registrar_factura</text>
+  <text x="980" y="408" font-size="12.5" fill="#555">login usr_fdw_pg_mssql → rol_fdw_integracion</text>
+
+  <!-- MongoDB -->
+  <rect x="960" y="480" width="380" height="270" rx="14" fill="#E9F7EF" stroke="#13834A" stroke-width="3"/>
+  <rect x="960" y="480" width="380" height="56" rx="14" fill="#13834A"/>
+  <rect x="960" y="516" width="380" height="20" fill="#13834A"/>
+  <text x="1150" y="516" text-anchor="middle" font-size="20" font-weight="700" fill="#fff">MongoDB 7 · reportes_medicos</text>
+  <text x="1150" y="560" text-anchor="middle" font-size="14" fill="#0E5530">Capa analítica · mongo_reportes · puerto 27018</text>
+  <text x="980" y="592" font-size="14" font-weight="700" fill="#0E5530">Colecciones (datos desnormalizados)</text>
+  <text x="980" y="614" font-size="13" fill="#333">resultados_estudios · resumen_paciente</text>
+  <text x="980" y="634" font-size="13" fill="#333">indicadores_mensuales · reporte_medico_tipo</text>
+  <text x="980" y="662" font-size="14" font-weight="700" fill="#0E5530">Usuarios (SCRAM-SHA-256)</text>
+  <text x="980" y="684" font-size="13" fill="#333">usr_fdw_pg_mongo → rol_fdw_escritura</text>
+  <text x="980" y="704" font-size="13" fill="#333">usr_api_web → read</text>
+  <text x="980" y="724" font-size="13" fill="#333">usr_api_mobile → rol_movil_lectura</text>
+
+  <!-- Flechas apps -->
+  <line x1="240" y1="245" x2="336" y2="515" stroke="#333" stroke-width="2.5" marker-end="url(#fl)"/>
+  <line x1="240" y1="465" x2="336" y2="550" stroke="#333" stroke-width="2.5" marker-end="url(#fl)"/>
+  <text x="140" y="320" text-anchor="middle" font-size="12.5" fill="#333">SELECT en api_web</text>
+  <text x="140" y="540" text-anchor="middle" font-size="12.5" fill="#333">SELECT en api_movil</text>
+
+  <!-- PG <-> SQL Server -->
+  <line x1="740" y1="300" x2="955" y2="300" stroke="#CC2927" stroke-width="3" marker-end="url(#flr)"/>
+  <text x="848" y="285" text-anchor="middle" font-size="12.5" fill="#A61B1B" font-weight="700">EXEC sp_registrar_*</text>
+  <text x="848" y="320" text-anchor="middle" font-size="12" fill="#A61B1B">(escritura controlada)</text>
+  <line x1="955" y1="370" x2="740" y2="370" stroke="#CC2927" stroke-width="3" marker-end="url(#flr)"/>
+  <text x="848" y="355" text-anchor="middle" font-size="12.5" fill="#A61B1B" font-weight="700">SELECT (lectura)</text>
+  <text x="848" y="392" text-anchor="middle" font-size="12" fill="#A61B1B">tds_fdw · usr_fdw_pg_mssql</text>
+
+  <!-- PG -> Mongo -->
+  <line x1="740" y1="615" x2="955" y2="615" stroke="#13834A" stroke-width="3" marker-end="url(#flg)"/>
+  <text x="848" y="598" text-anchor="middle" font-size="12.5" fill="#0E6B3B" font-weight="700">INSERT / UPDATE / DELETE</text>
+  <text x="848" y="637" text-anchor="middle" font-size="12" fill="#0E6B3B">mongo_fdw · usr_fdw_pg_mongo</text>
+
+  <!-- Externos -->
+  <rect x="1060" y="20" width="280" height="70" rx="10" fill="#FFF7ED" stroke="#D97706" stroke-width="2"/>
+  <text x="1200" y="50" text-anchor="middle" font-size="15" font-weight="700" fill="#92400E">Aseguradoras · Ministerio</text>
+  <text x="1200" y="72" text-anchor="middle" font-size="13" fill="#92400E">Sistemas de facturación</text>
+  <line x1="1200" y1="90" x2="1200" y2="146" stroke="#D97706" stroke-width="2.5" stroke-dasharray="6 5" marker-end="url(#fl)"/>
+</svg>
