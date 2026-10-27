@@ -93,7 +93,8 @@ Los tres servidores corren en contenedores Docker dentro de la misma red privada
 │   ├── 02_datos_prueba.sql
 │   ├── 03_procedimientos.sql          Procedimientos almacenados
 │   ├── 04_seguridad.sql               Login y rol del FDW
-│   └── 05_consultas_prueba.sql
+│   ├── 05_consultas_prueba.sql
+│   └── 06_demo_tres_motores.sql       Bloques para la demostracion en vivo junto con pgAdmin y Compass
 ├── mongodb/
 │   ├── 01_crear_bd.js                 Colecciones, validacion e indices
 │   ├── 02_seguridad.js                Roles y usuarios
