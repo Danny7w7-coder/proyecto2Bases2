@@ -19,7 +19,9 @@ powershell -ExecutionPolicy Bypass -File .\instalar.ps1 -Reiniciar
 | 6:30 – 7:30 | 2 | **Operación 3** + bloque de seguridad de `08_consultas_prueba.sql` + `04_prueba_permisos.js` | Vista web que mezcla datos locales y de SQL Server. usr_api_mobile solo ve sus vistas y recibe "permiso denegado" en lo demás. Mostrar la tabla de roles (pg_roles) |
 | 7:30 – 8:00 | 1 | README / documento Word | Cierre: resumen de lo logrado |
 
-Comandos (también están en el README, sección 10):
+**Lo más fácil para grabar:** `powershell -ExecutionPolicy Bypass -File .\demo.ps1`. Muestra cada operación con su explicación y espera Enter, así cada integrante narra su paso con calma.
+
+Comandos detallados (también están en el README, sección 10):
 
 ```powershell
 docker exec -it pg_clinica psql -U postgres -d clinica_db -f /scripts/08_consultas_prueba.sql
