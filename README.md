@@ -134,13 +134,12 @@ La primera vez tarda unos minutos, según la velocidad de internet. El script ha
 | 5 | PostgreSQL: ejecuta `postgres/scripts/01` a `07` (modelo, datos, roles, FDW, funciones, vistas) |
 | 6 | Carga inicial: exporta los estudios a MongoDB y sincroniza los convenios desde SQL Server |
 
-Si un script falla, la instalación se detiene y muestra cuál fue.
+Si un script falla, la instalación se detiene y muestra cuál fue. Si el sistema ya estaba instalado, el script lo indica y no modifica nada.
 
 ### 4.3 Reinstalar desde cero
 
 ```powershell
-docker compose down -v      # borra contenedores Y datos
-.\instalar.ps1
+powershell -ExecutionPolicy Bypass -File .\instalar.ps1 -Reiniciar   # borra contenedores Y datos, y reinstala
 ```
 
 > Reinstalar es necesario antes de grabar el video: la demostración registra el resultado de la orden 13 y al paciente 13, y esas operaciones solo se pueden hacer una vez.
@@ -513,7 +512,7 @@ Resultados verificados:
 | `Docker Desktop is unable to start` | Disco lleno o Docker apagado | Liberar espacio y reiniciar Docker Desktop |
 | `failed to solve ... read-only file system` al construir | Disco lleno durante la compilación | Liberar espacio y volver a ejecutar `instalar.ps1` |
 | Un puerto ya está en uso | Otra instalación local de PostgreSQL, SQL Server o MongoDB | Cambiar el puerto del lado izquierdo en `docker-compose.yml` (ej. `"5434:5432"`) |
-| `La orden 13 no existe o no esta pendiente` | La demostración ya se ejecutó | `docker compose down -v` y reinstalar |
+| `La orden 13 no existe o no esta pendiente` | La demostración ya se ejecutó | Reinstalar con `.\instalar.ps1 -Reiniciar` |
 | `WARNING: MongoDB no se actualizo` / `SQL Server no se actualizo` | El motor remoto no respondió | Revisar `docker ps` y reintentar con la función que indica el mensaje |
 | `user mapping not found for "..."` | Se consultó una tabla foránea con un rol sin mapeo | Usar `SET ROLE usr_fdw_pg_mssql` / `usr_fdw_pg_mongo`, o consultar a través de las vistas |
 

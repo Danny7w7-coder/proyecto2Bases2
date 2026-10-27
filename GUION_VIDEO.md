@@ -1,12 +1,11 @@
 # Guion sugerido para el video (5 a 8 minutos)
 
-Repartir las partes entre los 4 integrantes. **Cada integrante narra su parte.**
+Partes repartidas entre los 3 integrantes (1: Danny, 2: Dylan, 3: Francisco; pueden cambiar el orden). **Cada integrante narra su parte.**
 
 **Antes de grabar:** instalar desde cero para que los datos estén limpios:
 
 ```powershell
-docker compose down -v
-.\instalar.ps1
+powershell -ExecutionPolicy Bypass -File .\instalar.ps1 -Reiniciar
 ```
 
 | Tiempo | Integrante | Qué mostrar en pantalla | Qué decir (idea) |
@@ -16,8 +15,8 @@ docker compose down -v
 | 2:00 – 3:00 | 2 | `pg_hba.conf`, `04_fdw_sqlserver.sql`, bloque "Canales FDW" + **Operación 1** | Explicar CREATE SERVER, USER MAPPING y FOREIGN TABLE. Ejecutar el JOIN entre el paciente y su estado de facturación |
 | 3:00 – 4:30 | 3 | `docs/diagramas/03_flujo_transaccion.png` + **Operaciones 4 y 2** + operación extra | Exportar a MongoDB. Registrar el resultado de la orden 13: el resumen del paciente pasa de 1 a 2 estudios en MongoDB y aparece la factura en SQL Server, así que una sola operación toca los 3 motores. El COMMIT ocurre antes de propagar. Registrar el paciente 13 y mostrar que llega a SQL Server |
 | 4:30 – 5:15 | 2 | SQL Server: ejecutar `05_consultas_prueba.sql` | Mostrar el procedimiento de resumen, los datos que llegaron desde PostgreSQL (paciente 13 y factura del estudio 13) y que usr_fdw_pg_mssql no puede borrar (error 229): solo escribe por medio de procedimientos |
-| 5:15 – 6:30 | 4 | MongoDB: `03_consultas_analiticas.js` | **Operación 5**: agregación por médico y tipo de estudio, ranking de médicos y rendimiento por sucursal |
-| 6:30 – 7:30 | 4 | **Operación 3** + bloque de seguridad de `08_consultas_prueba.sql` + `04_prueba_permisos.js` | Vista web que mezcla datos locales y de SQL Server. usr_api_mobile solo ve sus vistas y recibe "permiso denegado" en lo demás. Mostrar la tabla de roles (pg_roles) |
+| 5:15 – 6:30 | 3 | MongoDB: `03_consultas_analiticas.js` | **Operación 5**: agregación por médico y tipo de estudio, ranking de médicos y rendimiento por sucursal |
+| 6:30 – 7:30 | 2 | **Operación 3** + bloque de seguridad de `08_consultas_prueba.sql` + `04_prueba_permisos.js` | Vista web que mezcla datos locales y de SQL Server. usr_api_mobile solo ve sus vistas y recibe "permiso denegado" en lo demás. Mostrar la tabla de roles (pg_roles) |
 | 7:30 – 8:00 | 1 | README / documento Word | Cierre: resumen de lo logrado |
 
 Comandos (también están en el README, sección 10):

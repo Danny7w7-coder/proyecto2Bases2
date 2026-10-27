@@ -2,12 +2,20 @@
 #  instalar.ps1 - Levanta los 3 servidores y ejecuta TODOS los scripts
 #  en el orden correcto. Ejecutar desde la carpeta del proyecto:
 #       powershell -ExecutionPolicy Bypass -File .\instalar.ps1
-#  Para empezar desde cero:  docker compose down -v ; .\instalar.ps1
+#  Para borrar todo y empezar desde cero:
+#       powershell -ExecutionPolicy Bypass -File .\instalar.ps1 -Reiniciar
 # =====================================================================
+param([switch]$Reiniciar)
+
 # Los errores se revisan con $LASTEXITCODE despues de cada comando
 $ErrorActionPreference = "Continue"
 
 function Paso($texto) { Write-Host "`n==== $texto ====" -ForegroundColor Cyan }
+
+if ($Reiniciar) {
+    Paso "0. Borrando la instalacion anterior (contenedores y datos)"
+    docker compose down -v
+}
 
 Paso "1. Descargando imagenes y levantando contenedores"
 # Descarga las 3 imagenes ya listas (PostgreSQL desde GitHub Container Registry).
@@ -22,6 +30,15 @@ do { Start-Sleep 3; docker exec mongo_reportes mongosh --quiet -u admin -p Admin
 Write-Host "MongoDB listo"
 do { Start-Sleep 3; docker exec mssql_integra /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P "Admin_Sql2026!" -Q "SELECT 1" *> $null } until ($LASTEXITCODE -eq 0)
 Write-Host "SQL Server listo"
+
+# Si las bases ya existen, no se vuelven a crear (daria errores de "ya existe")
+$existe = docker exec mssql_integra /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P "Admin_Sql2026!" -h -1 -Q "SET NOCOUNT ON; SELECT COUNT(*) FROM sys.databases WHERE name = 'IntegracionMedica'"
+if ("$existe".Trim() -eq "1") {
+    Write-Host "`nEl sistema YA ESTA INSTALADO: los 3 servidores estan funcionando." -ForegroundColor Green
+    Write-Host "Para borrar todo e instalar desde cero ejecute:"
+    Write-Host "  powershell -ExecutionPolicy Bypass -File .\instalar.ps1 -Reiniciar"
+    exit 0
+}
 
 Paso "3. SQL Server: base IntegracionMedica"
 foreach ($f in "01_crear_bd.sql", "02_datos_prueba.sql", "03_procedimientos.sql", "04_seguridad.sql") {
