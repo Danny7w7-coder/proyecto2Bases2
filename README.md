@@ -474,7 +474,7 @@ La colección `resultados_estudios` tiene un validador `$jsonSchema` con campos 
 | host | all | `usr_fdw_pg_mssql`, `usr_fdw_pg_mongo` | `reject` | Roles internos: nadie entra con ellos desde afuera |
 | host | `clinica_db` | `usr_api_web`, `usr_api_mobile` | `scram-sha-256` | Las aplicaciones solo entran a su base, con contraseña cifrada |
 | host | all | `postgres` | `scram-sha-256` | Administración remota (pgAdmin) |
-| host | all | all | `reject` | Cualquier otra conexión se rechaza |
+| local y host | all | all | `reject` | Cualquier otra conexión se rechaza, por socket local o por red |
 
 Ambos archivos se montan en el contenedor y se activan desde [docker-compose.yml](docker-compose.yml), por lo que no hay que configurarlos a mano:
 
@@ -574,7 +574,7 @@ Tablas foráneas del esquema `mongo`: `resultados_estudios`, `resumen_paciente` 
 | `usr_fdw_pg_mongo` | PostgreSQL (rol `NOLOGIN`) y MongoDB (usuario) | MongoDB: SCRAM-SHA-256. PostgreSQL: `reject` | **MongoDB**, rol propio `rol_fdw_escritura`: `find`, `insert`, `update` y `remove` **solo** en las 3 colecciones (no puede borrar colecciones ni crear usuarios). **PostgreSQL:** dueño de las tablas foráneas `mongo.*` y `SELECT` en las tablas locales que exporta |
 
 **¿Cómo se usan si no pueden iniciar sesión?**
-- Las funciones que tocan otro motor son `SECURITY DEFINER` y su dueño es el rol interno. Quien las ejecute se conecta al motor remoto **como el rol interno**, con sus permisos mínimos.
+- Las funciones que tocan otro motor son `SECURITY DEFINER` y su dueño es el rol interno. Quien las ejecute se conecta al motor remoto **como el rol interno**, con sus permisos mínimos. Además se les quita el permiso `EXECUTE` a `PUBLIC`, así que las aplicaciones no pueden ejecutarlas.
 - En SQL Server, los procedimientos pueden insertar aunque el rol tenga `DENY INSERT` gracias al **encadenamiento de propiedad**: el procedimiento y las tablas tienen el mismo dueño (`dbo`), así que SQL Server no revisa los permisos sobre las tablas.
 - `tds_fdw` usa el `USER MAPPING` del usuario que hace la consulta. Por eso `usr_api_web`, `usr_api_mobile` y el administrador `postgres` también tienen uno, pero todos apuntan al **mismo login remoto** `usr_fdw_pg_mssql`: nunca tienen en SQL Server más permisos que el perfil interno.
 

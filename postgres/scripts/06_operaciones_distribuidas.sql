@@ -5,7 +5,8 @@
    y su dueno es el rol interno correspondiente. Asi, cuando las ejecuta
    el administrador o una aplicacion, la conexion remota SIEMPRE se hace
    con el usuario interno (usr_fdw_pg_mssql / usr_fdw_pg_mongo) y sus
-   permisos minimos.
+   permisos minimos. Ademas se les quita el EXECUTE a PUBLIC: solo el
+   administrador y los procedimientos del sistema pueden ejecutarlas.
    ===================================================================== */
 
 -- =====================================================================
@@ -34,6 +35,7 @@ BEGIN
 END;
 $$;
 ALTER FUNCTION mssql.fn_sincronizar_convenios() OWNER TO usr_fdw_pg_mssql;
+REVOKE EXECUTE ON FUNCTION mssql.fn_sincronizar_convenios() FROM PUBLIC;
 
 
 -- ---------------------------------------------------------------------
@@ -91,6 +93,7 @@ BEGIN
 END;
 $$;
 ALTER FUNCTION mssql.fn_registrar_paciente_integracion(INT, INT) OWNER TO usr_fdw_pg_mssql;
+REVOKE EXECUTE ON FUNCTION mssql.fn_registrar_paciente_integracion(INT, INT) FROM PUBLIC;
 
 
 -- Envia la factura de un estudio realizado a SQL Server
@@ -122,6 +125,7 @@ BEGIN
 END;
 $$;
 ALTER FUNCTION mssql.fn_registrar_factura(INT) OWNER TO usr_fdw_pg_mssql;
+REVOKE EXECUTE ON FUNCTION mssql.fn_registrar_factura(INT) FROM PUBLIC;
 
 
 -- =====================================================================
@@ -205,6 +209,7 @@ BEGIN
 END;
 $$;
 ALTER FUNCTION mongo.fn_actualizar_resumen_paciente(INT) OWNER TO usr_fdw_pg_mongo;
+REVOKE EXECUTE ON FUNCTION mongo.fn_actualizar_resumen_paciente(INT) FROM PUBLIC;
 
 
 -- B.2) Publica UN estudio en MongoDB y actualiza el resumen del paciente
@@ -235,6 +240,7 @@ BEGIN
 END;
 $$;
 ALTER FUNCTION mongo.fn_publicar_estudio(INT) OWNER TO usr_fdw_pg_mongo;
+REVOKE EXECUTE ON FUNCTION mongo.fn_publicar_estudio(INT) FROM PUBLIC;
 
 
 -- B.3) Exportacion MASIVA de todos los estudios y resumenes (carga inicial)
@@ -267,6 +273,7 @@ BEGIN
 END;
 $$;
 ALTER FUNCTION mongo.fn_exportar_resultados() OWNER TO usr_fdw_pg_mongo;
+REVOKE EXECUTE ON FUNCTION mongo.fn_exportar_resultados() FROM PUBLIC;
 
 
 -- B.4) Exportacion de REPORTES AGREGADOS (indicadores por mes/sucursal/tipo)
@@ -298,6 +305,7 @@ BEGIN
 END;
 $$;
 ALTER FUNCTION mongo.fn_exportar_indicadores_mensuales() OWNER TO usr_fdw_pg_mongo;
+REVOKE EXECUTE ON FUNCTION mongo.fn_exportar_indicadores_mensuales() FROM PUBLIC;
 
 
 -- =====================================================================
