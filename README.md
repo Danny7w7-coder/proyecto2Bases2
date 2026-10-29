@@ -5,6 +5,7 @@
 - **Integrantes:** Danny Jesús Gonzalez Molina · Dylan Yoel Méndez Zamora · Francisco Javier Castillo Duarte
 - **Repositorio:** https://github.com/Danny7w7-coder/proyecto2Bases2
 - **Documentación formal:** [docs/Documentacion_Proyecto2.docx](docs/Documentacion_Proyecto2.docx)
+- **Video demostrativo:** https://youtu.be/hcGZ-3SbAv4
 
 Este documento explica de qué trata el proyecto, cómo instalarlo y probarlo paso a paso, y cómo está diseñado por dentro.
 
