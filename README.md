@@ -193,19 +193,23 @@ Hay tres formas. La más rápida es la primera.
 powershell -ExecutionPolicy Bypass -File .\reporte.ps1
 ```
 
-Ejecuta 9 pruebas en los tres servidores y abre una página web con los resultados, cada uno con su explicación y lo que se esperaba obtener:
+Ejecuta 9 pruebas en los tres servidores y abre la página `reporte_demo.html`. La página tiene:
+
+- **Un resumen arriba** ("9 de 9 pruebas correctas"): el script revisa solo cada resultado y marca cada prueba con **✔ Correcto** o **⚠ Revisar**.
+- **El mapa de conexiones** entre los tres motores.
+- **Cada prueba explicada**: qué demuestra, qué motores participan, los resultados reales, la comparación **antes / después** cuando algo cambia y un recuadro **"Qué mirar"**. Las celdas rosadas son datos que vienen de SQL Server y las filas amarillas son datos nuevos o que cambiaron. El SQL exacto queda oculto en "Ver la consulta".
 
 | Paso | Qué demuestra | Resultado esperado |
 |---|---|---|
 | 1 | Los 3 servidores están encendidos | `pg_clinica`, `mssql_integra` y `mongo_reportes` con estado *Up* |
-| 2 | Segmentación horizontal | 4 pacientes en cada sucursal; la búsqueda por sucursal solo lee un fragmento |
-| 3 | PostgreSQL lee de SQL Server | 12 pacientes con su estado de facturación y aseguradora |
-| 4 | PostgreSQL envía datos a MongoDB | 12 estudios y 10 indicadores |
-| 5 | Una operación toca los 3 motores | 3 mensajes de confirmación; el paciente 1 pasa de 1 a 2 estudios y aparece una factura PENDIENTE |
-| 6 | PostgreSQL escribe en SQL Server | El paciente 13 queda en Alajuela y en SQL Server con el código `AVP-000013` |
-| 7 | Vista para la aplicación web | `usr_api_web` ve 13 pacientes con datos de facturación |
-| 8 | Reporte en MongoDB | Una fila por médico y tipo de estudio, con cantidad e ingresos |
-| 9 | Seguridad | **Mensajes en rojo**: son los accesos indebidos que el sistema bloqueó, lo cual es correcto |
+| 2 | Segmentación horizontal y vertical | 4 pacientes por fragmento; la búsqueda por sucursal solo lee un fragmento; en SQL Server el paciente tiene solo 4 columnas |
+| 3 | Operación 1: PostgreSQL consulta a SQL Server | 12 pacientes con su estado de facturación y aseguradora |
+| 4 | Operación 4: exportación a MongoDB | 12 estudios y 10 indicadores; ejemplo de un documento JSON |
+| 5 | Operación 2: una operación toca los 3 motores | 3 confirmaciones; el paciente 1 pasa de 1 a 2 estudios y aparece la factura del estudio 13, PENDIENTE |
+| 6 | PostgreSQL escribe en SQL Server | El paciente 13 queda en `pacientes_alajuela` y en SQL Server con el código `AVP-000013` |
+| 7 | Operación 3: vista para la aplicación web | `usr_api_web` ve 13 pacientes con datos de facturación |
+| 8 | Operación 5: reporte en MongoDB | Una fila por médico y tipo de estudio, con cantidad e ingresos |
+| 9 | Seguridad | Tabla de 11 intentos: lo permitido funciona y lo indebido es rechazado (permisos, solo lectura, `pg_hba.conf`, error 229, *Unauthorized*) |
 
 ### 6.2 Con herramientas gráficas (los tres servidores)
 
@@ -221,7 +225,15 @@ Ejecuta 9 pruebas en los tres servidores y abre una página web con los resultad
 
 #### PostgreSQL en pgAdmin
 
-1. Clic derecho en **Servers → Register → Server…** y llenar los datos de la tabla anterior.
+1. Clic derecho en **Servers → Register → Server…**. En la pestaña *General* escribir un nombre (por ejemplo `Proyecto2 Clinica`) y en la pestaña *Connection*:
+
+   | Campo | Valor |
+   |---|---|
+   | Host name/address | `localhost` |
+   | Port | **`5433`** (no 5432, que es el de un PostgreSQL instalado en Windows) |
+   | Maintenance database | `clinica_db` |
+   | Username | `postgres` |
+   | Password | `Admin_Pg2026` (marcar *Save password*) |
 2. En `clinica_db` abrir el **Query Tool** y cargar el archivo [postgres/scripts/09_pruebas_pgadmin.sql](postgres/scripts/09_pruebas_pgadmin.sql).
 3. **Seleccionar un bloque con el mouse y presionar F5.** El resultado aparece abajo.
 
@@ -241,15 +253,32 @@ Desde PostgreSQL se ven los tres motores: las tablas normales son de PostgreSQL,
 | 10 | Comprueba el bloque 9 | Paciente en `pacientes_alajuela` con código `AVP-000013` |
 | 11 | **Operación 4:** indicadores en MongoDB | 10 indicadores por mes, sucursal y tipo |
 
-Para probar como **aplicación móvil**, registrar otro servidor en pgAdmin con el usuario `usr_api_mobile` / `Api_Mobile2026`:
+Para probar como **aplicación móvil**, registrar otro servidor en pgAdmin con los mismos datos, pero con usuario `usr_api_mobile` y contraseña `Api_Mobile2026`. Abrir un *Query Tool* en su `clinica_db` y ejecutar cada consulta por separado:
 ```sql
-SELECT * FROM api_movil.v_mis_citas WHERE id_paciente = 1;  -- funciona
-SELECT * FROM pacientes;                                     -- permission denied (correcto)
+SELECT * FROM api_movil.v_mis_citas WHERE id_paciente = 1;  -- funciona: 2 citas
+SELECT * FROM pacientes;                                     -- permission denied for table pacientes
+SELECT * FROM api_web.v_pacientes_facturacion;               -- permission denied for schema api_web
+CREATE TABLE prueba (x INT);                                 -- error: read-only transaction
 ```
+Los errores son el resultado correcto: la aplicación móvil solo puede leer sus propias vistas. Si se intenta registrar un servidor con un usuario interno (`usr_fdw_pg_mssql`), la conexión se rechaza por `pg_hba.conf`.
 
 #### SQL Server en SSMS
 
-Abrir [sqlserver/06_demo_tres_motores.sql](sqlserver/06_demo_tres_motores.sql) y ejecutar cada bloque (seleccionar + F5). Está pensado para usarse junto con pgAdmin, comparando **antes y después**:
+**Conectarse:** al abrir SSMS aparece la ventana *Conectar* (*Connect to Server*). Llenarla así:
+
+| Campo (español) | Campo (inglés) | Valor |
+|---|---|---|
+| Tipo de servidor | Server type | Motor de base de datos / Database Engine |
+| Nombre del servidor | Server name | **`localhost,1434`** (con coma, no con dos puntos) |
+| Authentication | Authentication | **Autenticación de SQL Server** / SQL Server Authentication |
+| Nombre de usuario | Login | `sa` |
+| Contraseña | Password | `Admin_Sql2026!` |
+| Cifrar | Encrypt | Obligatorio u Opcional (cualquiera funciona) |
+| Certificado de servidor de confianza | Trust server certificate | ✔ **marcado** |
+
+> No usar `.` ni `(local)` como nombre del servidor: esos apuntan a un SQL Server instalado en Windows, no al del proyecto, que corre en Docker en el puerto **1434**. Al conectar, en *Bases de datos* debe aparecer **`IntegracionMedica`**.
+
+**Ejecutar las pruebas:** abrir [sqlserver/06_demo_tres_motores.sql](sqlserver/06_demo_tres_motores.sql) y ejecutar cada bloque (seleccionar + F5). Está pensado para usarse junto con pgAdmin, comparando **antes y después**:
 
 | Bloque | Qué muestra | Antes del bloque 6/9 de pgAdmin | Después |
 |---|---|---|---|
@@ -262,17 +291,37 @@ Abrir [sqlserver/06_demo_tres_motores.sql](sqlserver/06_demo_tres_motores.sql) y
 
 #### MongoDB en Compass
 
-1. Conectarse con `mongodb://admin:Admin_Mongo2026@localhost:27018/`.
+1. **Conectarse:** presionar **+ Add new connection** y llenar:
+
+   | Campo | Valor |
+   |---|---|
+   | URI | `mongodb://admin:Admin_Mongo2026@localhost:27018/` |
+   | Name | `Proyecto2 MongoDB` (cualquier nombre) |
+   | Color / Favorite | Opcional |
+
+   Presionar **Save & Connect**. La URI ya incluye todo; si se prefiere llenar por campos, abrir **Advanced Connection Options**:
+
+   | Pestaña | Campo | Valor |
+   |---|---|---|
+   | General | Host | `localhost:27018` (no 27017, que es el de un MongoDB instalado en Windows) |
+   | Authentication | Authentication Method | Username/Password |
+   | Authentication | Username | `admin` |
+   | Authentication | Password | `Admin_Mongo2026` |
+   | Authentication | Authentication Database | `admin` |
+
 2. Abrir la base **`reportes_medicos`**. Sus colecciones son `resultados_estudios`, `resumen_paciente`, `indicadores_mensuales` y `reporte_medico_tipo`.
 3. En `resumen_paciente`, filtrar con `{ id_paciente: 1 }`. Después del bloque 6 de pgAdmin, `total_estudios` pasa de 1 a 2.
-4. **Operación 5:** en `resultados_estudios` → pestaña *Aggregations* → botón *Text*, pegar:
+4. **Operación 5:** en `resultados_estudios` → pestaña *Aggregations* → botón *Edit* (o *Text*, según la versión), pegar y presionar *Run*:
    ```js
    [
      { $group: { _id: { medico: "$medico", tipo: "$tipo" },
                  cantidad: { $sum: 1 }, ingreso_total: { $sum: "$costo" } } },
-     { $sort: { cantidad: -1 } }
+     { $project: { _id: 0, medico: "$_id.medico", tipo: "$_id.tipo",
+                   cantidad: 1, ingreso_total: 1 } },
+     { $sort: { cantidad: -1, medico: 1 } }
    ]
    ```
+   El resultado muestra 9 grupos, con el médico, el tipo de estudio, la cantidad y el ingreso total.
 
 ### 6.3 Pruebas completas desde la terminal
 
